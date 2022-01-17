@@ -108,12 +108,16 @@ const showTransactions = (acc, sort = false) => {
 		? acc.movements.slice().sort((a, b) => a - b)
 		: acc.movements;
 
-	transactions.forEach((el, i) => {
-		let type = el > 0 ? 'Deposit' : 'Withdrawal';
+	transactions.forEach((transaction, i) => {
+		let type = transaction > 0 ? 'Deposit' : 'Withdrawal';
 		const date = new Date(acc.movementsDates[i]);
 
 		const displayDate = formatTransactionsDate(date, acc.locale);
-		const displayCurrency = formatCurrency(el, acc.locale, acc.currency);
+		const displayCurrency = formatCurrency(
+			transaction,
+			acc.locale,
+			acc.currency
+		);
 
 		let html = `
         <div class="movements__row">
