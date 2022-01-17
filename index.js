@@ -117,7 +117,9 @@ const showTransactions = (acc, sort = false) => {
 
 		let html = `
         <div class="movements__row">
-					<div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+					<div class="movements__type movements__type--${type.toLowerCase()}">${
+			i + 1
+		} ${type.toLowerCase()}</div>
 					<div class="movements__date">${displayDate}</div>
 					<div class="movements__value">${displayCurrency}</div>
 				</div>
@@ -126,6 +128,8 @@ const showTransactions = (acc, sort = false) => {
 		containerMovements.insertAdjacentHTML('afterbegin', html);
 	});
 };
+
+showTransactions(account1);
 
 //! TODO
 
