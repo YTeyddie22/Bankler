@@ -92,7 +92,7 @@ const formatTransactionsDate = (date, locale) => {
 
 //* Format the currency
 
-const formatCurrency = (value, locale, currency) => {
+const formatCurrency = function (value, locale, currency) {
 	return Intl.NumberFormat(locale, {
 		style: 'currency',
 		currency: currency,
@@ -101,7 +101,7 @@ const formatCurrency = (value, locale, currency) => {
 
 //! Display Transactions
 
-const showTransactions = (acc, sort = false) => {
+const showTransactions = function (acc, sort = false) {
 	containerMovements.innerHTML = '';
 
 	const transactions = sort
@@ -135,35 +135,16 @@ const showTransactions = (acc, sort = false) => {
 
 showTransactions(account1);
 
-//! TODO
+//! Creating a userName for each accounts
 
-/* const createUserName = (account) => {
-	account.forEach(
-		(acc) =>
-			acc.username ===
-			acc.owner
-				.toLowerCase()
-				.split(' ')
-				.map((name) => name[0])
-				.join('')
-	);
+const createUserName = function (accounts) {
+	accounts.forEach((acc) => {
+		acc.userName = acc.owner
+			.split(' ')
+			.map((name) => name[0])
+			.join('')
+			.toLowerCase();
+	});
 };
 
 createUserName(accounts);
-
-//* Maintaining Credentials on click on login button
-
-let currentAccount;
-
-loginBtn.addEventListener('click', (e) => {
-	e.preventDefault();
-
-	const userName = loginUserName.value;
-
-	const pin = loginPin.value;
-
-	currentAccount = accounts.find((acc) => acc.username === userName);
-
-	console.log(currentAccount);
-});
- */
