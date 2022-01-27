@@ -74,7 +74,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
-//* Format the transaction date
+//* 1 Format the transaction date
 
 const formatTransactionsDate = (date, locale) => {
 	const calcDaysPassed = (day1, day2) => {
@@ -99,7 +99,7 @@ const formatCurrency = function (value, locale, currency) {
 	}).format(value);
 };
 
-//! Display Transactions
+//! 1 Display Transactions
 
 const showTransactions = function (acc, sort = false) {
 	containerMovements.innerHTML = '';
@@ -135,7 +135,7 @@ const showTransactions = function (acc, sort = false) {
 
 showTransactions(account1);
 
-//! Creating a userName for each accounts
+//! 2. Creating a userName for each accounts
 
 const createUserName = function (accounts) {
 	accounts.forEach((acc) => {
@@ -148,3 +148,19 @@ const createUserName = function (accounts) {
 };
 
 createUserName(accounts);
+
+//! 3. Display balance
+
+const displayBalance = function (account) {
+	account.balance = account.movements.reduce(
+		(account, cur) => account + cur,
+		0
+	);
+
+	labelBalance.textContent = formatCurrency(
+		account.balance,
+		account.locale,
+		account.currency
+	);
+};
+displayBalance(account1);
