@@ -92,7 +92,7 @@ const formatTransactionsDate = (date, locale) => {
 
 //* Format the currency
 
-const formatCurrency = (value, locale, currency) => {
+const formatCurrency = function (value, locale, currency) {
 	return Intl.NumberFormat(locale, {
 		style: 'currency',
 		currency: currency,
@@ -101,23 +101,29 @@ const formatCurrency = (value, locale, currency) => {
 
 //! Display Transactions
 
-const showTransactions = (acc, sort = false) => {
+const showTransactions = function (acc, sort = false) {
 	containerMovements.innerHTML = '';
 
 	const transactions = sort
 		? acc.movements.slice().sort((a, b) => a - b)
 		: acc.movements;
 
-	transactions.forEach((el, i) => {
-		let type = el > 0 ? 'Deposit' : 'Withdrawal';
+	transactions.forEach((transaction, i) => {
+		let type = transaction > 0 ? 'Deposit' : 'Withdrawal';
 		const date = new Date(acc.movementsDates[i]);
 
 		const displayDate = formatTransactionsDate(date, acc.locale);
-		const displayCurrency = formatCurrency(el, acc.locale, acc.currency);
+		const displayCurrency = formatCurrency(
+			transaction,
+			acc.locale,
+			acc.currency
+		);
 
 		let html = `
         <div class="movements__row">
-					<div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+					<div class="movements__type movements__type--${type.toLowerCase()}">${
+			i + 1
+		} ${type.toLowerCase()}</div>
 					<div class="movements__date">${displayDate}</div>
 					<div class="movements__value">${displayCurrency}</div>
 				</div>
@@ -127,35 +133,18 @@ const showTransactions = (acc, sort = false) => {
 	});
 };
 
-//! TODO
+showTransactions(account1);
 
-/* const createUserName = (account) => {
-	account.forEach(
-		(acc) =>
-			acc.username ===
-			acc.owner
-				.toLowerCase()
-				.split(' ')
-				.map((name) => name[0])
-				.join('')
-	);
+//! Creating a userName for each accounts
+
+const createUserName = function (accounts) {
+	accounts.forEach((acc) => {
+		acc.userName = acc.owner
+			.split(' ')
+			.map((name) => name[0])
+			.join('')
+			.toLowerCase();
+	});
 };
 
 createUserName(accounts);
-
-//* Maintaining Credentials on click on login button
-
-let currentAccount;
-
-loginBtn.addEventListener('click', (e) => {
-	e.preventDefault();
-
-	const userName = loginUserName.value;
-
-	const pin = loginPin.value;
-
-	currentAccount = accounts.find((acc) => acc.username === userName);
-
-	console.log(currentAccount);
-});
- */
