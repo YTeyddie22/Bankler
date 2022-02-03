@@ -236,3 +236,20 @@ const logoutTimer = function () {
 
 	return timer;
 };
+
+//! 10 Sorting balances
+
+let sorted = false;
+
+btnSort.addEventListener('click', (e) => {
+	e.preventDefault();
+
+	/*
+@todo
+ Dont forget to add the current account
+
+*/
+	showTransactions(account1, !sorted);
+
+	sorted = !sorted;
+});
