@@ -165,9 +165,9 @@ const displayBalance = function (account) {
 };
 displayBalance(account1);
 
-//! Display SummaryValues.
+//! 4. Display SummaryValues.
 
-const calcSummaryValues = function (summaryValue) {
+const calcDisplaySumValues = function (summaryValue) {
 	//* Income
 	const income = summaryValue.movements
 		.filter((el) => el > 0)
@@ -206,4 +206,33 @@ const calcSummaryValues = function (summaryValue) {
 	);
 };
 
-calcSummaryValues(account1);
+//? Global variables
+
+let timer;
+
+//! 5 Timer
+const logoutTimer = function () {
+	let time = 10;
+
+	const tick = () => {
+		const min = String(Math.trunc(time / 60)).padStart(2, 0);
+
+		const sec = String(time % 60).padStart(2, 0);
+
+		labelTimer.textContent = `${min}: ${sec}`;
+
+		if (time === 0) {
+			clearInterval(timer);
+			labelWelcome.textContent = `Login to start`;
+			containerApp.style.opacity = 0;
+		}
+
+		time--;
+	};
+
+	tick();
+
+	timer = setInterval(tick, 1000);
+
+	return timer;
+};
