@@ -49,8 +49,8 @@ const accounts = [account1, account2];
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
-const labelSumIn = document.querySelector('.summary__value--in');
-const labelSumOut = document.querySelector('.summary__value--out');
+const labelSumIncome = document.querySelector('.summary__value--in');
+const labelSumExpenditure = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
 
@@ -78,7 +78,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 const formatTransactionsDate = (date, locale) => {
 	const calcDaysPassed = (day1, day2) => {
-		return Math.round((Math.abs(day2, day1) / 1000) * 60 * 60 * 24);
+		return Math.round((Math.abs(day2 - day1) / 1000) * 60 * 60 * 24);
 	};
 
 	const daysPassed = calcDaysPassed(new Date(), date);
@@ -164,3 +164,46 @@ const displayBalance = function (account) {
 	);
 };
 displayBalance(account1);
+
+//! Display SummaryValues.
+
+const calcSummaryValues = function (summaryValue) {
+	//* Income
+	const income = summaryValue.movements
+		.filter((el) => el > 0)
+		.reduce((acc, cur) => acc + cur, 0);
+
+	labelSumIncome.textContent = formatCurrency(
+		income,
+		summaryValue.locale,
+		summaryValue.currency
+	);
+
+	//* Expenditure
+
+	const expenditure = summaryValue.movements
+		.filter((el) => el < 0)
+		.reduce((acc, cur) => acc + cur, 0);
+
+	labelSumExpenditure.textContent = formatCurrency(
+		Math.abs(expenditure),
+		summaryValue.locale,
+		summaryValue.currency
+	);
+
+	//* Interest
+
+	const interest = summaryValue.movements
+		.filter((el) => el > 0)
+		.map((deposit) => (deposit * summaryValue.interestRate) / 100)
+		.filter((interest) => interest > 0)
+		.reduce((acc, cur) => acc + cur, 0);
+
+	labelSumInterest.textContent = formatCurrency(
+		interest,
+		summaryValue.locale,
+		summaryValue.currency
+	);
+};
+
+calcSummaryValues(account1);
