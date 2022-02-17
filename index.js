@@ -264,6 +264,7 @@ const startLogoutTimer = function () {
 
 loginBtn.addEventListener('click', (e) => {
 	e.preventDefault();
+
 	currentAccount = accounts.find((acc) => acc.userName === loginUserName.value);
 	if (currentAccount?.pin === +loginPin.value) {
 		//* Show welcome message
@@ -308,33 +309,32 @@ loginBtn.addEventListener('click', (e) => {
 btnTransfer.addEventListener('click', (e) => {
 	e.preventDefault();
 
-	// * Clear the fields;
-
-	inputTransferAmount.value = inputTransferTo.value = '';
-
 	//*Get inputAmount
 
 	const amount = +inputTransferAmount.value;
 	const recieverAccount = accounts.find((account) => {
-		inputTransferTo.value === account.userName;
+		return inputTransferTo.value === account.userName;
 	});
 
-	console.log(currentAccount);
+	// * Clear the fields;
 
+	inputTransferAmount.value = inputTransferTo.value = '';
 	//*Validation
+
+	console.log(recieverAccount);
 
 	if (
 		amount > 0 &&
 		recieverAccount &&
-		currentAccount.balance > 0 &&
-		inputTransferTo.value !== currentAccount.userName
+		currentAccount.balance >= amount &&
+		recieverAccount?.userName !== currentAccount.userName
 	) {
 		//*adding the Information to the current data of accounts
 		currentAccount.movements.push(-amount);
-		recieveAccount.movements.push(amount);
+		recieverAccount.movements.push(amount);
 
-		currentAccount.movementsDates.push(new Date.now().toISOString());
-		recieverAccount.movementsDates.push(new Date.now().toISOString());
+		currentAccount.movementsDates.push(new Date().toISOString());
+		recieverAccount.movementsDates.push(new Date().toISOString());
 
 		updateUi(currentAccount);
 		clearInterval(timer);
