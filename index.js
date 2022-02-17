@@ -319,10 +319,8 @@ btnTransfer.addEventListener('click', (e) => {
 	// * Clear the fields;
 
 	inputTransferAmount.value = inputTransferTo.value = '';
-	//*Validation
 
-	console.log(recieverAccount);
-
+	//*Validation checks
 	if (
 		amount > 0 &&
 		recieverAccount &&
