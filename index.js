@@ -209,9 +209,18 @@ const calcDisplaySumValues = function (summaryValue) {
 //? Global variables
 
 let timer;
+let currentAccount;
+
+//! 7 UpdateUI
+
+const updateUi = function (acc) {
+	showTransactions(acc);
+	displayBalance(acc);
+	calcDisplaySumValues(acc);
+};
 
 //! 5 Timer
-const logoutTimer = function () {
+const startLogoutTimer = function () {
 	let time = 10;
 
 	const tick = () => {
@@ -252,4 +261,42 @@ btnSort.addEventListener('click', (e) => {
 	showTransactions(account1, !sorted);
 
 	sorted = !sorted;
+});
+
+//! Transfer TransactionBtn
+btnTransfer.addEventListener('click', (e) => {
+	e.preventDefault();
+
+	// * Clear the fields;
+
+	inputTransferAmount.value = inputTransferTo.value = '';
+
+	//*Get inputAmount
+
+	const amount = +inputTransferAmount.value;
+	const recieverAccount = accounts.find((account) => {
+		inputTransferTo.value === account.userName;
+	});
+
+	console.log(currentAccount);
+
+	//*Validation
+
+	if (
+		amount > 0 &&
+		recieverAccount &&
+		currentAccount.balance > 0 &&
+		inputTransferTo.value !== currentAccount.userName
+	) {
+		//*adding the Information to the current data of accounts
+		currentAccount.movements.push(-amount);
+		recieveAccount.movement.push(amount);
+
+		currentAccount.movementsDates.push(new Date.now().toISOString());
+		recieverAccount.movemensDates.push(new Date.now().toISOString());
+
+		updateUi(currentAccount);
+		clearInterval(timer);
+		timer = startLogoutTimer();
+	}
 });
