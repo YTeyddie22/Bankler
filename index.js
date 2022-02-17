@@ -90,6 +90,8 @@ const formatTransactionsDate = (date, locale) => {
 	return Intl.DateTimeFormat(locale).format(date);
 };
 
+////////////////////////////////////////////////////////////////
+
 //* Format the currency
 
 const formatCurrency = function (value, locale, currency) {
@@ -98,6 +100,8 @@ const formatCurrency = function (value, locale, currency) {
 		currency: currency,
 	}).format(value);
 };
+
+////////////////////////////////////////////////////////////
 
 //! 1 Display Transactions
 
@@ -135,6 +139,8 @@ const showTransactions = function (acc, sort = false) {
 
 showTransactions(account1);
 
+/////////////////////////////////////////////////////
+
 //! 2. Creating a userName for each accounts
 
 const createUserName = function (accounts) {
@@ -148,6 +154,8 @@ const createUserName = function (accounts) {
 };
 
 createUserName(accounts);
+
+///////////////////////////////////////////////////////////
 
 //! 3. Display balance
 
@@ -163,7 +171,8 @@ const displayBalance = function (account) {
 		account.currency
 	);
 };
-displayBalance(account1);
+
+/////////////////////////////////////////////////////////////
 
 //! 4. Display SummaryValues.
 
@@ -206,18 +215,23 @@ const calcDisplaySumValues = function (summaryValue) {
 	);
 };
 
+////////////////////////////////////////////////////
+//! 7 UpdateUI
+
+const updateUi = function (acc) {
+	showTransactions(acc);
+
+	displayBalance(acc);
+
+	calcDisplaySumValues(acc);
+};
+
 //? Global variables
 
 let timer;
 let currentAccount;
 
-//! 7 UpdateUI
-
-const updateUi = function (acc) {
-	showTransactions(acc);
-	displayBalance(acc);
-	calcDisplaySumValues(acc);
-};
+/////////////////////////////////////////////////////////
 
 //! 5 Timer
 const startLogoutTimer = function () {
@@ -246,22 +260,26 @@ const startLogoutTimer = function () {
 	return timer;
 };
 
-//! 10 Sorting balances
+////////////////////////////////////////////////////////////
 
-let sorted = false;
+//! Login button
 
-btnSort.addEventListener('click', (e) => {
+loginBtn.addEventListener('click', (e) => {
 	e.preventDefault();
+	currentAccount = accounts.find((acc) => acc.userName === loginUserName.value);
+	if (currentAccount?.pin === +loginPin.value) {
+		//* Show welcome message
 
-	/*
-@todo
- Dont forget to add the current account
+		labelWelcome.textContent = `Welcome ${currentAccount.owner.split(' ')[0]}`;
 
-*/
-	showTransactions(account1, !sorted);
+		//* Show container App
+		containerApp.style.opacity = 100;
 
-	sorted = !sorted;
+		updateUi(currentAccount);
+	}
 });
+
+////////////////////////////////////////////////////////////////////
 
 //! Transfer TransactionBtn
 btnTransfer.addEventListener('click', (e) => {
@@ -290,13 +308,30 @@ btnTransfer.addEventListener('click', (e) => {
 	) {
 		//*adding the Information to the current data of accounts
 		currentAccount.movements.push(-amount);
-		recieveAccount.movement.push(amount);
+		recieveAccount.movements.push(amount);
 
 		currentAccount.movementsDates.push(new Date.now().toISOString());
-		recieverAccount.movemensDates.push(new Date.now().toISOString());
+		recieverAccount.movementsDates.push(new Date.now().toISOString());
 
 		updateUi(currentAccount);
 		clearInterval(timer);
 		timer = startLogoutTimer();
 	}
+});
+
+//! 10 Sorting balances
+
+let sorted = false;
+
+btnSort.addEventListener('click', (e) => {
+	e.preventDefault();
+
+	/*
+@todo
+ Dont forget to add the current account
+
+*/
+	showTransactions(currentAccount.acc, !sorted);
+
+	sorted = !sorted;
 });
