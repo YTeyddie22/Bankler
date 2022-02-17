@@ -60,7 +60,7 @@ const containerMovements = document.querySelector('.movements');
 const loginBtn = document.querySelector('.login__btn');
 const transferBtn = document.querySelector('.form__btn--transfer');
 const loanBtn = document.querySelector('.form__btn--loan');
-const btnClose = document.querySelector('.form__btn--close');
+const closeBtn = document.querySelector('.form__btn--close');
 const btnSort = document.querySelector('.btn--sort');
 
 const loginUserName = document.querySelector('.login__input--user');
@@ -340,6 +340,8 @@ transferBtn.addEventListener('click', (e) => {
 	}
 });
 
+//////////////////////////////////////////////////////////////////
+
 //! 2 Loan button Feature
 
 loanBtn.addEventListener('click', (e) => {
@@ -366,6 +368,31 @@ loanBtn.addEventListener('click', (e) => {
 	inputLoanAmount.value = '';
 });
 
+//!3 Close button feature;
+
+closeBtn.addEventListener('click', (e) => {
+	e.preventDefault();
+
+	if (
+		currentAccount?.userName === inputCloseUsername.value &&
+		currentAccount?.pin === +inputClosePin.value
+	) {
+		//* find the index of the element to be deleted
+
+		const index = accounts.findIndex(
+			(account) => account.userName === currentAccount.userName
+		);
+
+		accounts.splice(index, 1);
+
+		//* Hide the app;
+		containerApp.style.opacity = 0;
+	}
+
+	inputCloseUsername.value = inputClosePin.value = '';
+});
+
+///////////////////////////////////////////////////////////////
 //!1 5.  Sorting balances
 
 let sorted = false;
