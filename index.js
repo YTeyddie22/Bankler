@@ -137,8 +137,6 @@ const showTransactions = function (acc, sort = false) {
 	});
 };
 
-showTransactions(account1);
-
 /////////////////////////////////////////////////////
 
 //! 2. Creating a userName for each accounts
@@ -235,7 +233,7 @@ let currentAccount;
 
 //! 5 Timer
 const startLogoutTimer = function () {
-	let time = 10;
+	let time = 120;
 
 	const tick = () => {
 		const min = String(Math.trunc(time / 60)).padStart(2, 0);
@@ -262,10 +260,11 @@ const startLogoutTimer = function () {
 
 ////////////////////////////////////////////////////////////
 
-//! Login button
+//! Starting Login button
 
 loginBtn.addEventListener('click', (e) => {
 	e.preventDefault();
+
 	currentAccount = accounts.find((acc) => acc.userName === loginUserName.value);
 	if (currentAccount?.pin === +loginPin.value) {
 		//* Show welcome message
@@ -274,6 +273,31 @@ loginBtn.addEventListener('click', (e) => {
 
 		//* Show container App
 		containerApp.style.opacity = 100;
+
+		//* Displaying the current date in the UI;
+		const now = new Date();
+
+		const options = {
+			hour: 'numeric',
+			minute: 'numeric',
+			day: 'numeric',
+			month: 'numeric',
+			year: 'numeric',
+		};
+
+		labelDate.textContent = new Intl.DateTimeFormat('en-Gb', options).format(
+			now
+		);
+
+		//* Clearing validation
+		loginUserName.value = loginPin.value = '';
+
+		loginPin.blur();
+
+		//* Restarting Timer
+		if (timer) clearInterval(timer);
+
+		timer = startLogoutTimer();
 
 		updateUi(currentAccount);
 	}
@@ -285,33 +309,32 @@ loginBtn.addEventListener('click', (e) => {
 btnTransfer.addEventListener('click', (e) => {
 	e.preventDefault();
 
-	// * Clear the fields;
-
-	inputTransferAmount.value = inputTransferTo.value = '';
-
 	//*Get inputAmount
 
 	const amount = +inputTransferAmount.value;
 	const recieverAccount = accounts.find((account) => {
-		inputTransferTo.value === account.userName;
+		return inputTransferTo.value === account.userName;
 	});
 
-	console.log(currentAccount);
+	// * Clear the fields;
 
+	inputTransferAmount.value = inputTransferTo.value = '';
 	//*Validation
+
+	console.log(recieverAccount);
 
 	if (
 		amount > 0 &&
 		recieverAccount &&
-		currentAccount.balance > 0 &&
-		inputTransferTo.value !== currentAccount.userName
+		currentAccount.balance >= amount &&
+		recieverAccount?.userName !== currentAccount.userName
 	) {
 		//*adding the Information to the current data of accounts
 		currentAccount.movements.push(-amount);
-		recieveAccount.movements.push(amount);
+		recieverAccount.movements.push(amount);
 
-		currentAccount.movementsDates.push(new Date.now().toISOString());
-		recieverAccount.movementsDates.push(new Date.now().toISOString());
+		currentAccount.movementsDates.push(new Date().toISOString());
+		recieverAccount.movementsDates.push(new Date().toISOString());
 
 		updateUi(currentAccount);
 		clearInterval(timer);
@@ -326,11 +349,6 @@ let sorted = false;
 btnSort.addEventListener('click', (e) => {
 	e.preventDefault();
 
-	/*
-@todo
- Dont forget to add the current account
-
-*/
 	showTransactions(currentAccount.acc, !sorted);
 
 	sorted = !sorted;
