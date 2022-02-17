@@ -137,8 +137,6 @@ const showTransactions = function (acc, sort = false) {
 	});
 };
 
-showTransactions(account1);
-
 /////////////////////////////////////////////////////
 
 //! 2. Creating a userName for each accounts
@@ -235,7 +233,7 @@ let currentAccount;
 
 //! 5 Timer
 const startLogoutTimer = function () {
-	let time = 10;
+	let time = 120;
 
 	const tick = () => {
 		const min = String(Math.trunc(time / 60)).padStart(2, 0);
@@ -262,7 +260,7 @@ const startLogoutTimer = function () {
 
 ////////////////////////////////////////////////////////////
 
-//! Login button
+//! Starting Login button
 
 loginBtn.addEventListener('click', (e) => {
 	e.preventDefault();
@@ -274,6 +272,31 @@ loginBtn.addEventListener('click', (e) => {
 
 		//* Show container App
 		containerApp.style.opacity = 100;
+
+		//* Displaying the current date in the UI;
+		const now = new Date();
+
+		const options = {
+			hour: 'numeric',
+			minute: 'numeric',
+			day: 'numeric',
+			month: 'numeric',
+			year: 'numeric',
+		};
+
+		labelDate.textContent = new Intl.DateTimeFormat('en-Gb', options).format(
+			now
+		);
+
+		//* Clearing validation
+		loginUserName.value = loginPin.value = '';
+
+		loginPin.blur();
+
+		//* Restarting Timer
+		if (timer) clearInterval(timer);
+
+		timer = startLogoutTimer();
 
 		updateUi(currentAccount);
 	}
@@ -326,11 +349,6 @@ let sorted = false;
 btnSort.addEventListener('click', (e) => {
 	e.preventDefault();
 
-	/*
-@todo
- Dont forget to add the current account
-
-*/
 	showTransactions(currentAccount.acc, !sorted);
 
 	sorted = !sorted;
