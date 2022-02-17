@@ -58,8 +58,8 @@ const containerApp = document.querySelector('.app');
 const containerMovements = document.querySelector('.movements');
 
 const loginBtn = document.querySelector('.login__btn');
-const btnTransfer = document.querySelector('.form__btn--transfer');
-const btnLoan = document.querySelector('.form__btn--loan');
+const transferBtn = document.querySelector('.form__btn--transfer');
+const loanBtn = document.querySelector('.form__btn--loan');
 const btnClose = document.querySelector('.form__btn--close');
 const btnSort = document.querySelector('.btn--sort');
 
@@ -231,7 +231,7 @@ let currentAccount;
 
 /////////////////////////////////////////////////////////
 
-//! 5 Timer
+//! 6 Timer
 const startLogoutTimer = function () {
 	let time = 120;
 
@@ -305,8 +305,8 @@ loginBtn.addEventListener('click', (e) => {
 
 ////////////////////////////////////////////////////////////////////
 
-//! Transfer TransactionBtn
-btnTransfer.addEventListener('click', (e) => {
+//! 1. Transfer TransactionBtn
+transferBtn.addEventListener('click', (e) => {
 	e.preventDefault();
 
 	//*Get inputAmount
@@ -319,10 +319,8 @@ btnTransfer.addEventListener('click', (e) => {
 	// * Clear the fields;
 
 	inputTransferAmount.value = inputTransferTo.value = '';
-	//*Validation
 
-	console.log(recieverAccount);
-
+	//*Validation checks
 	if (
 		amount > 0 &&
 		recieverAccount &&
@@ -342,7 +340,33 @@ btnTransfer.addEventListener('click', (e) => {
 	}
 });
 
-//! 10 Sorting balances
+//! 2 Loan button Feature
+
+loanBtn.addEventListener('click', (e) => {
+	e.preventDefault();
+
+	//* Get the amount
+	const amount = Math.floor(+inputLoanAmount.value);
+
+	if (
+		amount > 0 &&
+		currentAccount.movements.some((transaction) => transaction >= amount * 0.1)
+	) {
+		setTimeout(() => {
+			currentAccount.movements.push(amount);
+
+			currentAccount.movementsDates.push(new Date().toISOString());
+
+			updateUi(currentAccount);
+			clearInterval(timer);
+			timer = startLogoutTimer();
+		}, 2500);
+	}
+
+	inputLoanAmount.value = '';
+});
+
+//!1 5.  Sorting balances
 
 let sorted = false;
 
